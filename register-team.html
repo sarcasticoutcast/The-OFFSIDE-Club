@@ -83,7 +83,9 @@
         <span class="eyebrow" data-cms="reg.s3.eyebrow">The Squad · 7 Players</span>
         <p class="hint" data-cms="reg.s3.hint">All seven, including the captain. Ringers allowed. We won't tell anyone.</p>
 
-        <div class="squad-grid">
+        <!-- The seven boxes below are the default. The admin panel can add or
+             remove boxes; cms.js adjusts this list on load. -->
+        <div class="squad-grid" id="squadGrid">
           <div class="field"><label for="p1"><span class="jersey">01</span> Player</label><input type="text" id="p1" name="player_1" placeholder="Full name" required></div>
           <div class="field"><label for="p2"><span class="jersey">02</span> Player</label><input type="text" id="p2" name="player_2" placeholder="Full name" required></div>
           <div class="field"><label for="p3"><span class="jersey">03</span> Player</label><input type="text" id="p3" name="player_3" placeholder="Full name" required></div>

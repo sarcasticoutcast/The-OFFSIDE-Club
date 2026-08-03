@@ -71,10 +71,48 @@
       wa.href = wa.href.split('?')[0] + '?text=' + encodeURIComponent(map['join.wa.template']);
     }
 
+    if (map['reg.squad.count']) setSquadSize(parseInt(map['reg.squad.count'], 10));
+
     // re-run the stat counter so an edited number animates cleanly
     if (typeof window.OffsideCountUp === 'function') window.OffsideCountUp();
 
     document.dispatchEvent(new CustomEvent('cms:content', { detail: map }));
+  }
+
+  /* ---------- squad size on the team registration form ---------- */
+
+  // Grows or shrinks the list of player boxes by cloning the first one, so
+  // the markup only ever has to describe a single field.
+  function setSquadSize(n) {
+    var grid = document.getElementById('squadGrid');
+    if (!grid || !n || isNaN(n)) return;
+    n = Math.max(1, Math.min(20, n));
+
+    var template = grid.querySelector('.field');
+    if (!template) return;
+
+    // drop any boxes beyond the wanted count
+    var fields = grid.querySelectorAll('.field');
+    for (var i = fields.length - 1; i >= n; i--) fields[i].remove();
+
+    // add whatever is missing
+    var have = grid.querySelectorAll('.field').length;
+    for (var j = have; j < n; j++) {
+      var num = j + 1;
+      var pad = num < 10 ? '0' + num : String(num);
+      var copy = template.cloneNode(true);
+      var jersey = copy.querySelector('.jersey');
+      var label = copy.querySelector('label');
+      var input = copy.querySelector('input');
+      if (jersey) jersey.textContent = pad;
+      if (label) label.setAttribute('for', 'p' + num);
+      if (input) {
+        input.id = 'p' + num;
+        input.name = 'player_' + num;
+        input.value = '';
+      }
+      grid.appendChild(copy);
+    }
   }
 
   /* ---------- gallery ---------- */

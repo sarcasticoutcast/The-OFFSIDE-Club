@@ -61,6 +61,22 @@
   .mini.revert { float: right; padding: 3px 7px; font-size: 9.5px; margin-top: -2px; }
   .f.changed .mini.revert { color: var(--red); border-color: rgba(228,3,46,0.5); }
 
+  .stepper { display: flex; align-items: center; gap: 14px; }
+  .stepper .mini {
+    width: 46px; height: 46px; font-size: 20px; padding: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .stepper .mini:hover { color: var(--green); border-color: var(--green); }
+  .stepval {
+    min-width: 84px; text-align: center;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .stepval span { font-family: 'Anton', sans-serif; font-size: 30px; color: var(--chalk); line-height: 1; }
+  .stepval small {
+    font-family: var(--sans); font-size: 10px; letter-spacing: 1px;
+    text-transform: uppercase; color: var(--steel-dim);
+  }
+
   .howto {
     border: 1px solid var(--border); border-left: 3px solid var(--green);
     border-radius: 8px; background: rgba(31,174,74,0.05);
@@ -180,6 +196,20 @@
             <button class="mini danger" id="posterReset">Put back original</button>
           </div>
         </div>
+      </div>
+    </details>
+
+    <!-- squad size -->
+    <details class="group">
+      <summary>Player boxes on the team form</summary>
+      <div class="group-body">
+        <p class="hint" style="margin:0 0 14px;">When a team registers, they type one name per box. Add or remove boxes to match how many players a team needs.</p>
+        <div class="stepper">
+          <button class="mini" id="squadMinus" title="Remove a box">&minus;</button>
+          <div class="stepval"><span id="squadCount">7</span><small>boxes</small></div>
+          <button class="mini" id="squadPlus" title="Add a box">+</button>
+        </div>
+        <p class="hint" style="margin:14px 0 0;">Saves straight away. If the label above the boxes mentions a number, change that too under <b>Register team page</b>.</p>
       </div>
     </details>
 
@@ -430,6 +460,7 @@ if (!ready) {
     });
     if (dbValues['img.hero'])   $('prevHero').src   = mediaUrl(dbValues['img.hero']);
     if (dbValues['img.poster']) $('prevPoster').src = mediaUrl(dbValues['img.poster']);
+    showSquad();
     countChanges();
   }
 
@@ -501,6 +532,29 @@ if (!ready) {
   }
   wireImage('heroBtn', 'heroFile', 'prevHero', 'img.hero', 'heroReset', 1600);
   wireImage('posterBtn', 'posterFile', 'prevPoster', 'img.poster', 'posterReset', 1200);
+
+  /* ---------- number of player boxes ---------- */
+  const SQUAD_DEFAULT = 7;
+  function showSquad() {
+    const n = parseInt(dbValues['reg.squad.count'], 10);
+    $('squadCount').textContent = (!n || isNaN(n)) ? SQUAD_DEFAULT : n;
+  }
+  async function setSquad(delta) {
+    const now = parseInt($('squadCount').textContent, 10) || SQUAD_DEFAULT;
+    const next = Math.max(1, Math.min(20, now + delta));
+    if (next === now) return;
+    $('squadCount').textContent = next;
+    const { error } = await sb.from('content')
+      .upsert([{ key: 'reg.squad.count', value: String(next) }], { onConflict: 'key' });
+    if (error) {
+      $('squadCount').textContent = now;
+      return say($('globalMsg'), 'Could not save. Check your internet and try again.', 'err');
+    }
+    dbValues['reg.squad.count'] = String(next);
+    say($('globalMsg'), 'Team form now has ' + next + ' player boxes.', 'ok');
+  }
+  $('squadMinus').addEventListener('click', () => setSquad(-1));
+  $('squadPlus').addEventListener('click', () => setSquad(1));
 
   /* ---------- gallery ---------- */
   $('drop').addEventListener('click', () => $('galleryFiles').click());
