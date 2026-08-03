@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register Your Team | The Offside Club</title>
+<meta name="description" content="Register your team for The Offside Club Open Tournament, Saturday August 16, Strike Turf, Panchwati, Agra. All levels welcome.">
+<link rel="stylesheet" href="style.css">
+<script src="cms-config.js" defer></script>
+<script src="cms.js" defer></script>
+<script src="app.js" defer></script>
+</head>
+<body>
+
+<svg class="grain" viewBox="0 0 400 400" preserveAspectRatio="none">
+  <defs><filter id="grainF"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0"/></filter></defs>
+  <rect width="400" height="400" filter="url(#grainF)"/>
+</svg>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html">
+      <svg class="crosshair" width="22" height="22" viewBox="0 0 26 26" aria-hidden="true"><g stroke="#1FAE4A" stroke-width="1.8" stroke-linecap="round"><circle cx="13" cy="13" r="9" fill="none"/><line x1="13" y1="0" x2="13" y2="5"/><line x1="13" y1="21" x2="13" y2="26"/><line x1="0" y1="13" x2="5" y2="13"/><line x1="21" y1="13" x2="26" y2="13"/></g></svg>
+      <span class="brand-word">THE OFFSIDE CLUB</span>
+    </a>
+    <button class="navtoggle" aria-label="Menu">☰</button>
+    <ul class="navlinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li><a href="register-team.html" class="active">Register Team</a></li>
+      <li><a href="join.html">Join</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+
+<header class="hero">
+ <div class="wrap">
+  <h1 class="display" style="font-size:clamp(40px,7vw,72px);" data-cms-html="reg.h1">REGISTER<br>YOUR TEAM</h1>
+  <div class="rule"><div class="bar"></div><span class="slash">///</span></div>
+  <p class="lede" data-cms="reg.lede">Seven names. One captain. Whatever happens after that is between you and the scoreboard.</p>
+  <span class="eyebrow hero-tag" data-cms="reg.tag">Open Tournament · Sat, Aug 16 · Strike Turf, Panchwati, Agra</span>
+ </div>
+</header>
+
+<section class="wrap" style="border-bottom:none; padding-top:0;">
+  <form class="form-shell" action="https://formspree.io/f/mykranqr" method="POST">
+
+    <div class="form-head">
+      <h2 data-cms="reg.form.title">TEAM SHEET</h2>
+      <p data-cms="reg.form.p">Fill this in once, properly. We'll message your captain on WhatsApp with the format, timings and everything else.</p>
+    </div>
+
+    <div class="form-body">
+
+      <div class="form-section">
+        <span class="eyebrow" data-cms="reg.s1.eyebrow">The Team</span>
+        <p class="hint" data-cms="reg.s1.hint">This is the name that goes on the fixture list. Choose wisely.</p>
+
+        <div class="field">
+          <label for="team"><span class="jersey">★</span> Team Name</label>
+          <input type="text" id="team" name="team_name" placeholder="Something you can shout from the sideline" required>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <span class="eyebrow" data-cms="reg.s2.eyebrow">The Captain</span>
+        <p class="hint" data-cms="reg.s2.hint">Someone has to answer the phone and take the blame. That's the job.</p>
+
+        <div class="field">
+          <label for="captain_name"><span class="jersey armband">C</span> Captain's Name</label>
+          <input type="text" id="captain_name" name="captain_name" placeholder="The one who organises everyone" required>
+        </div>
+        <div class="field">
+          <label for="captain_whatsapp"><span class="jersey armband">#</span> Captain's WhatsApp</label>
+          <input type="tel" id="captain_whatsapp" name="captain_whatsapp" inputmode="tel" autocomplete="tel" placeholder="10-digit number" required>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <span class="eyebrow" data-cms="reg.s3.eyebrow">The Squad · 7 Players</span>
+        <p class="hint" data-cms="reg.s3.hint">All seven, including the captain. Ringers allowed. We won't tell anyone.</p>
+
+        <div class="squad-grid">
+          <div class="field"><label for="p1"><span class="jersey">01</span> Player</label><input type="text" id="p1" name="player_1" placeholder="Full name" required></div>
+          <div class="field"><label for="p2"><span class="jersey">02</span> Player</label><input type="text" id="p2" name="player_2" placeholder="Full name" required></div>
+          <div class="field"><label for="p3"><span class="jersey">03</span> Player</label><input type="text" id="p3" name="player_3" placeholder="Full name" required></div>
+          <div class="field"><label for="p4"><span class="jersey">04</span> Player</label><input type="text" id="p4" name="player_4" placeholder="Full name" required></div>
+          <div class="field"><label for="p5"><span class="jersey">05</span> Player</label><input type="text" id="p5" name="player_5" placeholder="Full name" required></div>
+          <div class="field"><label for="p6"><span class="jersey">06</span> Player</label><input type="text" id="p6" name="player_6" placeholder="Full name" required></div>
+          <div class="field"><label for="p7"><span class="jersey">07</span> Player</label><input type="text" id="p7" name="player_7" placeholder="Full name" required></div>
+        </div>
+      </div>
+
+      <div class="form-foot">
+        <button type="submit" class="btn solid" data-cms="reg.btn">Lock In The Squad →</button>
+        <p class="hint" data-cms="reg.note">One entry per team. No entry fee to register. We'll confirm everything else on WhatsApp.</p>
+      </div>
+
+    </div>
+  </form>
+</section>
+
+</main>
+
+<footer class="wrap">
+  <div class="footer-signature">
+    <svg width="18" height="18" viewBox="0 0 26 26" aria-hidden="true"><g stroke="#1FAE4A" stroke-width="2" stroke-linecap="round"><circle cx="13" cy="13" r="9" fill="none"/><line x1="13" y1="0" x2="13" y2="5"/><line x1="13" y1="21" x2="13" y2="26"/><line x1="0" y1="13" x2="5" y2="13"/><line x1="21" y1="13" x2="26" y2="13"/></g></svg>
+    Estd. 2026
+  </div>
+  <div class="footer-links">
+    <a class="btn" href="https://chat.whatsapp.com/CTaRtjwTQTb9jP2LODt9ru" target="_blank" rel="noopener">Join WhatsApp</a>
+    <a class="btn" href="https://instagram.com/offsideclub.toc" target="_blank" rel="noopener">Instagram</a>
+  </div>
+</footer>
+
+</body>
+</html>

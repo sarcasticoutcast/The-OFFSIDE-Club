@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin | The Offside Club</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="style.css">
+<style>
+  body::before { display: none; }
+  .admin-wrap { max-width: 900px; margin: 0 auto; padding: 28px 20px 80px; }
+  .admin-head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; flex-wrap: wrap; padding-bottom: 20px;
+    border-bottom: 1px solid var(--border); margin-bottom: 28px;
+  }
+  .admin-head h1 { font-size: 30px; }
+  .who { font-family: var(--sans); font-size: 12px; color: var(--steel); }
+
+  .gate { max-width: 380px; margin: 60px auto; }
+  .msg {
+    font-family: var(--sans); font-size: 12.5px; padding: 11px 14px;
+    border-radius: 7px; margin: 14px 0; display: none; line-height: 1.5;
+  }
+  .msg.show { display: block; }
+  .msg.err { background: rgba(228,3,46,0.12); color: #ff8fa3; border: 1px solid rgba(228,3,46,0.4); }
+  .msg.ok  { background: rgba(31,174,74,0.12); color: #7ee2a0; border: 1px solid rgba(31,174,74,0.4); }
+
+  details.group {
+    border: 1px solid var(--border); border-radius: 10px;
+    background: var(--card); margin-bottom: 14px; overflow: hidden;
+  }
+  details.group > summary {
+    padding: 16px 20px; cursor: pointer; list-style: none;
+    font-family: var(--sans); font-size: 13px; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--chalk);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  details.group > summary::-webkit-details-marker { display: none; }
+  details.group > summary::after { content: "+"; color: var(--red); font-size: 18px; }
+  details.group[open] > summary::after { content: "\2013"; }
+  details.group[open] > summary { border-bottom: 1px solid var(--border); }
+  .group-body { padding: 20px; }
+
+  .f { margin-bottom: 18px; }
+  .f label {
+    display: block; font-family: var(--sans); font-size: 11.5px;
+    letter-spacing: 0.8px; color: var(--steel); margin-bottom: 7px;
+  }
+  .f .key { color: var(--steel-dim); font-size: 10.5px; }
+  .f input[type=text], .f textarea {
+    width: 100%; background: #0d0d0d; border: 1px solid var(--border);
+    border-radius: 6px; padding: 11px 13px; color: var(--chalk);
+    font-family: var(--ui); font-size: 15px; line-height: 1.5;
+  }
+  .f textarea { min-height: 92px; resize: vertical; }
+  .f input:focus, .f textarea:focus {
+    outline: none; border-color: var(--green); box-shadow: 0 0 0 3px rgba(31,174,74,0.15);
+  }
+  .f.changed input, .f.changed textarea { border-color: var(--red); }
+  .mini.revert { float: right; padding: 3px 7px; font-size: 9.5px; margin-top: -2px; }
+  .f.changed .mini.revert { color: var(--red); border-color: rgba(228,3,46,0.5); }
+
+  .howto {
+    border: 1px solid var(--border); border-left: 3px solid var(--green);
+    border-radius: 8px; background: rgba(31,174,74,0.05);
+    padding: 16px 18px; margin-bottom: 22px;
+  }
+  .howto b {
+    display: block; font-family: var(--sans); font-size: 12px;
+    letter-spacing: 1px; text-transform: uppercase; color: var(--chalk); margin-bottom: 6px;
+  }
+  .howto p { margin: 0; font-size: 15px; max-width: none; }
+  .howto p b { display: inline; font-family: inherit; font-size: inherit;
+    letter-spacing: 0; text-transform: none; color: var(--chalk); margin: 0; }
+
+  .bar {
+    position: sticky; bottom: 0; z-index: 20; margin-top: 24px;
+    background: rgba(10,10,10,0.95); border-top: 1px solid var(--border);
+    padding: 14px 0; display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
+  }
+  .count { font-family: var(--sans); font-size: 12px; color: var(--steel); }
+
+  .thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
+  .thumb { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: #0d0d0d; }
+  .thumb img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
+  .thumb .meta { padding: 9px; display: flex; flex-direction: column; gap: 7px; }
+  .thumb input { width: 100%; background: #111; border: 1px solid var(--border);
+    border-radius: 5px; padding: 7px 8px; color: var(--chalk); font-size: 13px; font-family: var(--ui); }
+  .mini {
+    font-family: var(--sans); font-size: 11px; letter-spacing: 0.6px; text-transform: uppercase;
+    padding: 7px 9px; border-radius: 5px; cursor: pointer; border: 1px solid var(--border);
+    background: none; color: var(--steel);
+  }
+  .mini:hover { color: var(--chalk); border-color: #3a3a3a; }
+  .mini.danger:hover { color: var(--red); border-color: var(--red); }
+
+  .drop {
+    border: 1px dashed var(--steel-dim); border-radius: 10px; padding: 26px;
+    text-align: center; margin-bottom: 20px; cursor: pointer;
+  }
+  .drop:hover, .drop.over { border-color: var(--green); background: rgba(31,174,74,0.05); }
+  .drop p { margin: 0 auto; font-size: 14px; }
+
+  .imgrow { display: grid; grid-template-columns: 120px 1fr; gap: 16px; align-items: center; margin-bottom: 20px; }
+  .imgrow img { width: 100%; border-radius: 7px; display: block; border: 1px solid var(--border); }
+  @media (max-width: 560px) { .imgrow { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div class="admin-wrap">
+
+  <!-- ============ LOGIN ============ -->
+  <section id="gate" class="gate" style="display:none;">
+    <h1 class="display" style="font-size:38px;">ADMIN</h1>
+    <div class="rule"><div class="bar" style="width:64px;height:3px;background:var(--red);position:static;padding:0;"></div></div>
+    <p style="font-size:15px;">Sign in to change the words and photos on the website.</p>
+    <form id="loginForm" class="form-shell" style="margin-top:20px;">
+      <div class="form-body">
+        <div class="f"><label>Email</label><input type="text" id="email" autocomplete="username" required></div>
+        <div class="f"><label>Password</label><input type="password" id="password" autocomplete="current-password" required
+          style="width:100%;background:#0d0d0d;border:1px solid var(--border);border-radius:6px;padding:11px 13px;color:var(--chalk);font-family:var(--ui);font-size:15px;"></div>
+        <div id="loginMsg" class="msg err"></div>
+        <button class="btn solid" type="submit" style="width:100%;">Sign In</button>
+      </div>
+    </form>
+    <p class="hint" style="margin-top:16px;">There is no sign-up. Only your account can make changes.</p>
+  </section>
+
+  <!-- ============ NOT CONFIGURED ============ -->
+  <section id="setup" style="display:none;">
+    <h1 class="display" style="font-size:34px;">SETUP NEEDED</h1>
+    <div class="rule"><div class="bar"></div><span class="slash">///</span></div>
+    <p>Open <b>cms-config.js</b> and paste your Supabase <b>Project URL</b> and <b>anon key</b>. Then run <b>supabase-schema.sql</b> in the Supabase SQL editor.</p>
+    <p class="hint">Until then the site runs on its built-in text, which is why nothing looks broken.</p>
+  </section>
+
+  <!-- ============ EDITOR ============ -->
+  <section id="panel" style="display:none;">
+    <div class="admin-head">
+      <div>
+        <h1 class="display" style="font-size:30px;">SITE EDITOR</h1>
+        <div class="who" id="who"></div>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <a class="mini" href="index.html" target="_blank" rel="noopener">Open website</a>
+        <button class="mini danger" id="logout">Sign out</button>
+      </div>
+    </div>
+
+    <div class="howto">
+      <b>How this works</b>
+      <p>Every box below already has what is currently on the website. Change any box you like, then press <b>Save changes</b> at the bottom. Anything you do not touch stays exactly as it is.</p>
+    </div>
+
+    <div id="globalMsg" class="msg"></div>
+
+    <!-- images -->
+    <details class="group" open>
+      <summary>Main pictures</summary>
+      <div class="group-body">
+        <div class="imgrow">
+          <img id="prevHero" alt="" src="photos/hero-bg.jpg">
+          <div>
+            <label style="font-family:var(--sans);font-size:11.5px;color:var(--steel);">Background picture at the top of every page</label>
+            <p class="hint" style="margin:6px 0 10px;">It sits behind the big heading and is darkened automatically so the words stay readable.</p>
+            <input type="file" id="heroFile" accept="image/*" hidden>
+            <button class="mini" id="heroBtn">Change picture</button>
+            <button class="mini danger" id="heroReset">Put back original</button>
+          </div>
+        </div>
+        <div class="imgrow">
+          <img id="prevPoster" alt="" src="photos/tournament-poster.jpg">
+          <div>
+            <label style="font-family:var(--sans);font-size:11.5px;color:var(--steel);">Tournament poster on the home page</label>
+            <p class="hint" style="margin:6px 0 10px;">The tall picture next to the tournament details.</p>
+            <input type="file" id="posterFile" accept="image/*" hidden>
+            <button class="mini" id="posterBtn">Change picture</button>
+            <button class="mini danger" id="posterReset">Put back original</button>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <!-- gallery -->
+    <details class="group">
+      <summary>Gallery photos</summary>
+      <div class="group-body">
+        <div class="drop" id="drop">
+          <p><b>Tap here to add photos</b>, or drag them in.</p>
+          <p class="hint" style="margin-top:6px;">You can pick several at once. Big photos from your phone are shrunk automatically, so it stays fast.</p>
+        </div>
+        <input type="file" id="galleryFiles" accept="image/*" multiple hidden>
+        <div id="uploadMsg" class="msg"></div>
+        <div class="thumbs" id="thumbs"></div>
+        <p class="hint" id="noPhotos" style="display:none;">No photos added yet.</p>
+      </div>
+    </details>
+
+    <!-- text groups injected here -->
+    <div id="groups"></div>
+
+    <div class="bar">
+      <button class="btn solid" id="save" style="min-width:200px;">Save changes</button>
+      <span class="count" id="count">No changes</span>
+    </div>
+  </section>
+
+</div>
+
+<script src="cms-config.js"></script>
+<script src="cms-defaults.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* ------------------------------------------------------------------
+   Every editable field on the site. "key" must match the data-cms
+   attribute in the HTML. Leave a field blank to fall back to the text
+   written in the page itself.
+   ------------------------------------------------------------------ */
+const FIELDS = [
+  { group: 'Home page', items: [
+    ['home.hero.h1',    'Big heading at the top', 'html'],
+    ['home.hero.lede',  'Sentence under the big heading', 'area'],
+    ['home.stat1.value','First number'],
+    ['home.stat1.label','Words after the first number'],
+    ['home.stat2.value','Second number'],
+    ['home.stat2.label','Words after the second number'],
+    ['home.stat3.value','Third number or date'],
+    ['home.stat3.label','Words after the third one'],
+    ['home.hero.tag',   'Small red line at the bottom'],
+    ['home.tourn.title','Tournament section heading'],
+    ['home.tourn.h3',   'Tournament date and place'],
+    ['home.tourn.p1',   'What the tournament is', 'area'],
+    ['home.tourn.p2',   'Extra tournament details (small grey text)', 'area'],
+    ['home.tourn.btn',  'Words on the tournament button'],
+    ['home.who.title',  'Heading above the three boxes'],
+    ['home.card1.title','First box: title'],  ['home.card1.body','First box: text', 'area'],
+    ['home.card2.title','Second box: title'], ['home.card2.body','Second box: text', 'area'],
+    ['home.card3.title','Third box: title'],  ['home.card3.body','Third box: text', 'area'],
+    ['home.who.btn',    'Words on the button under the boxes'],
+  ]},
+  { group: 'About page', items: [
+    ['about.h1','Big heading at the top'],
+    ['about.lede','Sentence under the big heading', 'area'],
+    ['about.tag','Small red line at the bottom'],
+    ['about.opening','Opening paragraph', 'area'],
+    ['about.p2','Second paragraph', 'area'],
+    ['about.quote','The big quote', 'area'],
+    ['about.what.title','Heading above the numbered list'],
+    ['about.row1.title','Point 1: title'], ['about.row1.body','Point 1: text', 'area'],
+    ['about.row2.title','Point 2: title'], ['about.row2.body','Point 2: text', 'area'],
+    ['about.row3.title','Point 3: title'], ['about.row3.body','Point 3: text', 'area'],
+    ['about.row4.title','Point 4: title'], ['about.row4.body','Point 4: text', 'area'],
+    ['about.people.title','Heading above the last section'],
+    ['about.people.p1','First paragraph about the people', 'area'],
+    ['about.people.p2','Second paragraph about the people', 'area'],
+    ['about.closing.tag','Small red line inside the box'],
+    ['about.closing.p1','Paragraph inside the box', 'area'],
+    ['about.closing.p2','Last line inside the box', 'area'],
+    ['about.closing.btn','Words on the button'],
+  ]},
+  { group: 'Gallery page', items: [
+    ['gallery.h1','Big heading at the top'],
+    ['gallery.lede','Sentence under the big heading', 'area'],
+    ['gallery.tag','Small red line at the bottom'],
+    ['gallery.empty1','Message shown when there are no photos yet', 'area'],
+    ['gallery.empty2','Smaller line under that message', 'area'],
+  ]},
+  { group: 'Join page', items: [
+    ['join.h1','Big heading at the top'],
+    ['join.lede','Sentence under the big heading', 'area'],
+    ['join.tag','Small red line at the bottom'],
+    ['join.how.title','Heading above the three steps'],
+    ['join.how.p','Paragraph under that heading', 'area'],
+    ['join.step1.title','Step 1: title'], ['join.step1.body','Step 1: text', 'area'],
+    ['join.step2.title','Step 2: title'], ['join.step2.body','Step 2: text', 'area'],
+    ['join.step3.title','Step 3: title'], ['join.step3.body','Step 3: text', 'area'],
+    ['join.btn','Words on the WhatsApp button'],
+    ['join.btn.note','Small note under the WhatsApp button', 'area'],
+    ['join.wa.template','The message people send you on WhatsApp', 'area'],
+    ['join.member.title','Heading above the sign-up form', 'html'],
+    ['join.member.p','Paragraph under that heading', 'area'],
+    ['join.form.title','Title on the form box'],
+    ['join.form.p','Text under the form title', 'area'],
+    ['join.form.hint','Note under the skill level question', 'area'],
+    ['join.form.btn','Words on the form button'],
+    ['join.form.note','Small note under the form button', 'area'],
+  ]},
+  { group: 'Register team page', items: [
+    ['reg.h1','Big heading at the top', 'html'],
+    ['reg.lede','Sentence under the big heading', 'area'],
+    ['reg.tag','Small red line at the bottom'],
+    ['reg.form.title','Title on the form box'],
+    ['reg.form.p','Text under the form title', 'area'],
+    ['reg.s1.eyebrow','Team name section: label'],
+    ['reg.s1.hint','Team name section: note', 'area'],
+    ['reg.s2.eyebrow','Captain section: label'],
+    ['reg.s2.hint','Captain section: note', 'area'],
+    ['reg.s3.eyebrow','Squad section: label'],
+    ['reg.s3.hint','Squad section: note', 'area'],
+    ['reg.btn','Words on the submit button'],
+    ['reg.note','Small note under the submit button', 'area'],
+  ]},
+];
+
+const cfg = window.OFFSIDE_CMS || {};
+const ready = cfg.url && cfg.anonKey && !cfg.url.startsWith('YOUR_') && !cfg.anonKey.startsWith('YOUR_');
+const $ = id => document.getElementById(id);
+
+if (!ready) {
+  $('setup').style.display = 'block';
+} else {
+  const sb = supabase.createClient(cfg.url, cfg.anonKey);
+  const mediaUrl = p => cfg.url.replace(/\/+$/, '') + '/storage/v1/object/public/media/' + p;
+  const DEFAULTS = window.OFFSIDE_DEFAULTS || {};
+
+  // Headings that hold line breaks are stored as <br> but must never be
+  // shown that way. In the editor they are ordinary multi-line boxes:
+  // one line per line. Typed angle brackets are escaped, so whatever is
+  // typed is exactly what appears on the site.
+  const HTML_KEYS = new Set();
+  FIELDS.forEach(g => g.items.forEach(([k, , type]) => { if (type === 'html') HTML_KEYS.add(k); }));
+
+  const toEditor = s => String(s == null ? '' : s)
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+
+  const toStored = s => String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/\r?\n/g, '<br>');
+
+  const forEditor = k => HTML_KEYS.has(k) ? toEditor(effective(k)) : effective(k);
+
+  // What each box shows when opened: the saved edit if there is one,
+  // otherwise the text currently written into the page.
+  let dbValues = {};
+  let baseline = {};
+  const effective = k => (dbValues[k] !== undefined ? dbValues[k] : (DEFAULTS[k] || ''));
+
+  function say(el, text, kind) {
+    el.textContent = text;
+    el.className = 'msg show ' + (kind || '');
+    if (kind === 'ok') setTimeout(() => { el.className = 'msg'; }, 4000);
+  }
+
+  /* ---------- auth ---------- */
+  sb.auth.getSession().then(({ data }) => data.session ? boot(data.session) : $('gate').style.display = 'block');
+
+  $('loginForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const { data, error } = await sb.auth.signInWithPassword({
+      email: $('email').value.trim(), password: $('password').value
+    });
+    if (error) return say($('loginMsg'), error.message, 'err');
+    $('gate').style.display = 'none';
+    boot(data.session);
+  });
+
+  $('logout').addEventListener('click', async () => { await sb.auth.signOut(); location.reload(); });
+
+  /* ---------- boot ---------- */
+  async function boot(session) {
+    $('panel').style.display = 'block';
+    $('who').textContent = 'Signed in as ' + session.user.email;
+    buildFields();
+    await loadContent();
+    await loadPhotos();
+  }
+
+  function buildFields() {
+    const host = $('groups');
+    FIELDS.forEach(g => {
+      const d = document.createElement('details');
+      d.className = 'group';
+      const rows = g.items.map(([key, label, type]) => {
+        const input = (type === 'area' || type === 'html')
+          ? `<textarea id="fld_${key}" data-key="${key}" ${type === 'html' ? 'rows="3"' : ''}></textarea>`
+          : `<input type="text" id="fld_${key}" data-key="${key}">`;
+        const note = type === 'html' ? ' <span class="key">(press Enter for a new line)</span>' : '';
+        return `<div class="f"><label>${label}${note}
+                  <button type="button" class="mini revert" data-revert="${key}" title="Put back the original wording">Put back</button>
+                  </label>${input}</div>`;
+      }).join('');
+      d.innerHTML = `<summary>${g.group}</summary><div class="group-body">${rows}</div>`;
+      host.appendChild(d);
+    });
+
+    host.addEventListener('input', e => {
+      const el = e.target;
+      if (!el.dataset.key) return;
+      el.closest('.f').classList.toggle('changed', el.value !== baseline[el.dataset.key]);
+      countChanges();
+    });
+
+    // per-field revert to the text originally written into the page
+    host.addEventListener('click', e => {
+      const btn = e.target.closest('[data-revert]');
+      if (!btn) return;
+      const key = btn.getAttribute('data-revert');
+      const el = document.getElementById('fld_' + key);
+      const d = DEFAULTS[key] || '';
+      el.value = HTML_KEYS.has(key) ? toEditor(d) : d;
+      el.closest('.f').classList.toggle('changed', el.value !== baseline[key]);
+      countChanges();
+    });
+  }
+
+  function countChanges() {
+    const n = changed().length;
+    $('count').textContent = n === 0 ? 'Nothing changed yet' : n + (n === 1 ? ' box' : ' boxes') + ' changed, not saved yet';
+  }
+
+  function changed() {
+    return [...document.querySelectorAll('[data-key]')]
+      .filter(el => el.value !== baseline[el.dataset.key]);
+  }
+
+  async function loadContent() {
+    const { data, error } = await sb.from('content').select('key,value');
+    if (error) return say($('globalMsg'), 'Could not load the current text. Check your internet and refresh.', 'err');
+    dbValues = {};
+    (data || []).forEach(r => dbValues[r.key] = r.value);
+    baseline = {};
+    document.querySelectorAll('[data-key]').forEach(el => {
+      const k = el.dataset.key;
+      baseline[k] = forEditor(k);
+      el.value = baseline[k];
+      el.closest('.f').classList.remove('changed');
+    });
+    if (dbValues['img.hero'])   $('prevHero').src   = mediaUrl(dbValues['img.hero']);
+    if (dbValues['img.poster']) $('prevPoster').src = mediaUrl(dbValues['img.poster']);
+    countChanges();
+  }
+
+  $('save').addEventListener('click', async () => {
+    // line breaks typed in the editor are converted back to <br> on the way out
+    const rows = changed().map(el => ({
+      key: el.dataset.key,
+      value: HTML_KEYS.has(el.dataset.key) ? toStored(el.value) : el.value
+    }));
+    if (!rows.length) return say($('globalMsg'), 'You have not changed anything yet.', 'ok');
+    $('save').disabled = true;
+    const { error } = await sb.from('content').upsert(rows, { onConflict: 'key' });
+    $('save').disabled = false;
+    if (error) return say($('globalMsg'), 'Could not save. Check your internet and try again.', 'err');
+    say($('globalMsg'), 'Saved. Open the website to see it.', 'ok');
+    await loadContent();
+  });
+
+  /* ---------- image resizing before upload ---------- */
+  function shrink(file, maxW, quality) {
+    return new Promise(resolve => {
+      const img = new Image();
+      img.onload = () => {
+        const scale = Math.min(1, maxW / img.width);
+        const c = document.createElement('canvas');
+        c.width = Math.round(img.width * scale);
+        c.height = Math.round(img.height * scale);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        c.toBlob(b => resolve(b || file), 'image/jpeg', quality);
+        URL.revokeObjectURL(img.src);
+      };
+      img.onerror = () => resolve(file);
+      img.src = URL.createObjectURL(file);
+    });
+  }
+
+  async function upload(file, prefix, maxW, quality) {
+    const blob = await shrink(file, maxW, quality);
+    const name = prefix + '-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '.jpg';
+    const { error } = await sb.storage.from('media').upload(name, blob, {
+      contentType: 'image/jpeg', cacheControl: '3600'
+    });
+    if (error) throw error;
+    return name;
+  }
+
+  function wireImage(btnId, fileId, previewId, key, resetId, maxW) {
+    $(btnId).addEventListener('click', () => $(fileId).click());
+    $(fileId).addEventListener('change', async () => {
+      const f = $(fileId).files[0];
+      if (!f) return;
+      say($('globalMsg'), 'Uploading...', '');
+      try {
+        const path = await upload(f, key.replace('.', '-'), maxW, 0.8);
+        const { error } = await sb.from('content').upsert([{ key, value: path }], { onConflict: 'key' });
+        if (error) throw error;
+        $(previewId).src = mediaUrl(path);
+        dbValues[key] = path;
+        say($('globalMsg'), 'Picture changed. Open the website to see it.', 'ok');
+      } catch (err) { say($('globalMsg'), 'Could not upload that picture. Try a different one.', 'err'); }
+      $(fileId).value = '';
+    });
+    $(resetId).addEventListener('click', async () => {
+      await sb.from('content').delete().eq('key', key);
+      delete dbValues[key];
+      $(previewId).src = key === 'img.hero' ? 'photos/hero-bg.jpg' : 'photos/tournament-poster.jpg';
+      say($('globalMsg'), 'Original picture put back.', 'ok');
+    });
+  }
+  wireImage('heroBtn', 'heroFile', 'prevHero', 'img.hero', 'heroReset', 1600);
+  wireImage('posterBtn', 'posterFile', 'prevPoster', 'img.poster', 'posterReset', 1200);
+
+  /* ---------- gallery ---------- */
+  $('drop').addEventListener('click', () => $('galleryFiles').click());
+  ['dragenter', 'dragover'].forEach(ev => $('drop').addEventListener(ev, e => {
+    e.preventDefault(); $('drop').classList.add('over');
+  }));
+  ['dragleave', 'drop'].forEach(ev => $('drop').addEventListener(ev, e => {
+    e.preventDefault(); $('drop').classList.remove('over');
+  }));
+  $('drop').addEventListener('drop', e => handleFiles(e.dataTransfer.files));
+  $('galleryFiles').addEventListener('change', () => { handleFiles($('galleryFiles').files); $('galleryFiles').value = ''; });
+
+  async function handleFiles(list) {
+    const files = [...list].filter(f => f.type.startsWith('image/'));
+    if (!files.length) return;
+    let done = 0;
+    for (const f of files) {
+      say($('uploadMsg'), `Uploading ${done + 1} of ${files.length}...`, '');
+      try {
+        const path = await upload(f, 'photo', 1600, 0.78);
+        const { error } = await sb.from('photos').insert([{ path, caption: '' }]);
+        if (error) throw error;
+        done++;
+      } catch (err) { say($('uploadMsg'), 'Failed on ' + f.name + ': ' + err.message, 'err'); return; }
+    }
+    say($('uploadMsg'), done + ' photo' + (done === 1 ? '' : 's') + ' added.', 'ok');
+    loadPhotos();
+  }
+
+  async function loadPhotos() {
+    const { data, error } = await sb.from('photos')
+      .select('id,path,caption,sort_order')
+      .order('sort_order', { ascending: true })
+      .order('created_at', { ascending: false });
+    if (error) return say($('uploadMsg'), error.message, 'err');
+    const host = $('thumbs');
+    host.innerHTML = '';
+    $('noPhotos').style.display = (data && data.length) ? 'none' : 'block';
+    (data || []).forEach(p => {
+      const d = document.createElement('div');
+      d.className = 'thumb';
+      d.innerHTML = `
+        <img src="${mediaUrl(p.path)}" alt="">
+        <div class="meta">
+          <input type="text" value="${(p.caption || '').replace(/"/g, '&quot;')}" placeholder="Caption (optional)">
+          <div style="display:flex;gap:6px;">
+            <button class="mini" data-act="save">Save</button>
+            <button class="mini danger" data-act="del">Delete</button>
+          </div>
+        </div>`;
+      d.querySelector('[data-act=save]').addEventListener('click', async () => {
+        const caption = d.querySelector('input').value;
+        const { error } = await sb.from('photos').update({ caption }).eq('id', p.id);
+        say($('uploadMsg'), error ? error.message : 'Caption saved.', error ? 'err' : 'ok');
+      });
+      d.querySelector('[data-act=del]').addEventListener('click', async () => {
+        if (!confirm('Remove this photo from the website?')) return;
+        await sb.storage.from('media').remove([p.path]);
+        const { error } = await sb.from('photos').delete().eq('id', p.id);
+        if (error) return say($('uploadMsg'), error.message, 'err');
+        say($('uploadMsg'), 'Photo deleted.', 'ok');
+        loadPhotos();
+      });
+      host.appendChild(d);
+    });
+  }
+}
+</script>
+
+</body>
+</html>

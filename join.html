@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Join | The Offside Club</title>
+<meta name="description" content="Book a game with The Offside Club in Agra, or join the community. Message us on WhatsApp, no card details needed.">
+<link rel="stylesheet" href="style.css">
+<script src="cms-config.js" defer></script>
+<script src="cms.js" defer></script>
+<script src="app.js" defer></script>
+</head>
+<body>
+
+<svg class="grain" viewBox="0 0 400 400" preserveAspectRatio="none">
+  <defs><filter id="grainF"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0"/></filter></defs>
+  <rect width="400" height="400" filter="url(#grainF)"/>
+</svg>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html">
+      <svg class="crosshair" width="22" height="22" viewBox="0 0 26 26" aria-hidden="true"><g stroke="#1FAE4A" stroke-width="1.8" stroke-linecap="round"><circle cx="13" cy="13" r="9" fill="none"/><line x1="13" y1="0" x2="13" y2="5"/><line x1="13" y1="21" x2="13" y2="26"/><line x1="0" y1="13" x2="5" y2="13"/><line x1="21" y1="13" x2="26" y2="13"/></g></svg>
+      <span class="brand-word">THE OFFSIDE CLUB</span>
+    </a>
+    <button class="navtoggle" aria-label="Menu">☰</button>
+    <ul class="navlinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li><a href="register-team.html">Register Team</a></li>
+      <li><a href="join.html" class="active">Join</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+
+<header class="hero">
+ <div class="wrap">
+  <h1 class="display" style="font-size:clamp(40px,7vw,72px);" data-cms="join.h1">BOOK A GAME</h1>
+  <div class="rule"><div class="bar"></div><span class="slash">///</span></div>
+  <p class="lede" data-cms="join.lede">No trials, no sign-up fee, no awkward "so what position do you play" interview. Just tell us you're coming.</p>
+  <span class="eyebrow hero-tag" data-cms="join.tag">Sat, Aug 16 · Strike Turf, Panchwati</span>
+ </div>
+</header>
+
+<section class="wrap">
+  <h2 class="display" style="font-size:clamp(28px,5vw,46px);" data-cms="join.how.title">HOW IT WORKS</h2>
+  <div class="rule"><div class="bar"></div><span class="slash">///</span></div>
+  <p data-cms="join.how.p">Booking is manual for now, which is a polite way of saying you message a human and a human messages back. No card details, nothing to download.</p>
+
+  <ol class="steps">
+    <li>
+      <b data-cms="join.step1.title">Say you're in</b>
+      <p data-cms="join.step1.body">Message us on WhatsApp with your name and how many of you are coming. Bringing four friends is encouraged. Bringing eleven, slightly less so.</p>
+    </li>
+    <li>
+      <b data-cms="join.step2.title">We hold your slot</b>
+      <p data-cms="join.step2.body">We'll confirm you're on the list and send across the UPI ID. Usually within a few hours, faster if matchday is close.</p>
+    </li>
+    <li>
+      <b data-cms="join.step3.title">Pay and turn up</b>
+      <p data-cms="join.step3.body">Pay directly via UPI and that's it, you're playing. Boots optional. Turning up on time, appreciated.</p>
+    </li>
+  </ol>
+
+  <div class="btn-row">
+    <!-- href is the QR link (no phone number in it). app.js upgrades this to
+         the number-format link with a prefilled message. To change the
+         template wording, edit the WhatsApp block in app.js. -->
+    <a class="btn solid" data-wa-template href="https://wa.me/qr/AYOCWDJDL4C6E1" target="_blank" rel="noopener" data-cms="join.btn">Message on WhatsApp →</a>
+  </div>
+  <p class="hint" style="margin-top:14px;" data-cms="join.btn.note">Opens WhatsApp with the message ready. Fill in the blanks and hit send.</p>
+</section>
+
+<section class="wrap" id="member" style="border-bottom:none;">
+  <h2 class="display" style="font-size:clamp(28px,5vw,46px);" data-cms-html="join.member.title">BECOME A<br>MEMBER</h2>
+  <div class="rule"><div class="bar"></div><span class="slash">///</span></div>
+  <p data-cms="join.member.p">Not here for one game? Leave your details and you're on the list for all of it: the twice-a-week matches, the tournaments, the screenings, and the group chat that genuinely never sleeps.</p>
+
+  <form class="form-shell" style="max-width:520px; margin-top:34px;" action="https://formspree.io/f/mykranqr" method="POST">
+
+    <div class="form-head">
+      <h2 data-cms="join.form.title">SIGN YOURSELF UP</h2>
+      <p data-cms="join.form.p">Three fields. Takes about eleven seconds, less time than it takes to lose an argument in the group chat.</p>
+    </div>
+
+    <div class="form-body">
+      <div class="field">
+        <label for="name"><span class="jersey">01</span> Name</label>
+        <input type="text" id="name" name="name" autocomplete="name" placeholder="What everyone actually calls you" required>
+      </div>
+
+      <div class="field">
+        <label for="contact"><span class="jersey">02</span> Phone or Email</label>
+        <input type="text" id="contact" name="contact" placeholder="Whichever one you actually check" required>
+      </div>
+
+      <div class="field">
+        <label for="level"><span class="jersey">03</span> Skill Level</label>
+        <select id="level" name="level">
+          <option value="">Rather let the pitch decide</option>
+          <option value="beginner">Beginner (first proper games)</option>
+          <option value="intermediate">Intermediate (I hold my own)</option>
+          <option value="advanced">Advanced (I'm being modest)</option>
+        </select>
+        <p class="hint" data-cms="join.form.hint">Honestly, this changes nothing. Nobody gets benched. We're just curious.</p>
+      </div>
+
+      <div class="form-foot">
+        <button type="submit" class="btn solid" data-cms="join.form.btn">Count Me In →</button>
+        <p class="hint" data-cms="join.form.note">We'll add you to the community and message you before the next game.</p>
+      </div>
+    </div>
+  </form>
+</section>
+
+</main>
+
+<footer class="wrap">
+  <div class="footer-signature">
+    <svg width="18" height="18" viewBox="0 0 26 26" aria-hidden="true"><g stroke="#1FAE4A" stroke-width="2" stroke-linecap="round"><circle cx="13" cy="13" r="9" fill="none"/><line x1="13" y1="0" x2="13" y2="5"/><line x1="13" y1="21" x2="13" y2="26"/><line x1="0" y1="13" x2="5" y2="13"/><line x1="21" y1="13" x2="26" y2="13"/></g></svg>
+    Estd. 2026
+  </div>
+  <div class="footer-links">
+    <a class="btn" href="https://chat.whatsapp.com/CTaRtjwTQTb9jP2LODt9ru" target="_blank" rel="noopener">Join WhatsApp</a>
+    <a class="btn" href="https://instagram.com/offsideclub.toc" target="_blank" rel="noopener">Instagram</a>
+  </div>
+</footer>
+
+</body>
+</html>

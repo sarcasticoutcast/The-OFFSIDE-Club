@@ -1,0 +1,3 @@
+# Vercel CLI artifacts. .env.local holds a live token, never commit it.
+.vercel
+.env.local
